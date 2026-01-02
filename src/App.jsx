@@ -12,7 +12,12 @@ import {
   deleteDoc,
   onSnapshot,
 } from "firebase/firestore"; // Adicionar dados ao Cloud Firestore
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
 
 import "./app.css";
 
@@ -23,6 +28,9 @@ function App() {
 
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+
+  const [user, setUser] = useState(false);
+  const [userDetail, setUserDetail] = useState({});
 
   const [posts, setPosts] = useState([]);
 
@@ -41,6 +49,24 @@ function App() {
       });
     }
     loadPosts();
+  }, []);
+
+  useEffect(() => {
+    async function checkLogin() {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setUser(true);
+          setUserDetail({
+            uid: user.uid,
+            email: user.email,
+          });
+        } else {
+          setUser(false);
+          setUserDetail({});
+        }
+      });
+    }
+    checkLogin();
   }, []);
 
   async function handleAdd() {
@@ -146,10 +172,47 @@ function App() {
       });
   }
 
+  async function logarUsuario() {
+    await signInWithEmailAndPassword(auth, email, senha)
+      .then((value) => {
+        toast.success("USER LOGADO");
+
+        setUserDetail({
+          uid: value.user.uid,
+          email: value.user.email,
+        });
+        setUser(true);
+        setEmail("");
+        setSenha("");
+      })
+      .catch(() => {
+        toast.warn("Você não está logado");
+      });
+  }
+
+  async function fazerLogout() {
+    await signOut(auth);
+    toast.success("Você saiu da conta");
+    setUser(false);
+    setUserDetail({});
+  }
+
   return (
     <div>
       <div className="container">
         <h1>ReactJs + Firebase :)</h1>
+        {user && (
+          <diV>
+            <strong>Seja bem-vindo(a) - (Você está logado!)</strong>
+            <br />
+            <span>
+              ID: {userDetail.uid} - {userDetail.email}
+            </span>
+            <button onClick={fazerLogout} className="sair">
+              Sair da conta
+            </button>
+          </diV>
+        )}
         <h2>Tela de Cadastro</h2>
         <label>Email</label>
         <input
@@ -165,7 +228,10 @@ function App() {
           value={senha}
           onChange={(event) => setSenha(event.target.value)}
         />
-        <button onClick={newUsers}>Cadastrar</button>
+        <div className="btn">
+          <button onClick={newUsers}>Cadastrar</button>
+          <button onClick={logarUsuario}>Fazer Login</button>
+        </div>
       </div>
 
       <div className="container">
