@@ -200,88 +200,88 @@ function App() {
   return (
     <div>
       <div className="container">
-        <h1>ReactJs + Firebase :)</h1>
-        {user && (
-          <diV>
-            <strong>Seja bem-vindo(a) - (Você está logado!)</strong>
-            <br />
-            <span>
-              ID: {userDetail.uid} - {userDetail.email}
-            </span>
-            <button onClick={fazerLogout} className="sair">
-              Sair da conta
-            </button>
-          </diV>
-        )}
-        <h2>Tela de Cadastro</h2>
-        <label>Email</label>
-        <input
-          type="text"
-          placeholder="Digite o seu email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-        />
+        <div className="conteudo">
+          <h1>ReactJs + Firebase :)</h1>
+          {user && (
+            <div className="login">
+              <strong>Seja bem-vindo(a) - (Você está logado!)</strong>
+              <br />
+              <span className="uid">
+                ID: {userDetail.uid} - {userDetail.email}
+              </span>
+              <button onClick={fazerLogout} className="sair">
+                Sair da conta
+              </button>
+            </div>
+          )}
+          <h2>Tela de Cadastro</h2>
+          <label>Email</label>
+          <input
+            type="text"
+            placeholder="Digite o seu email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
 
-        <label>Email</label>
-        <input
-          placeholder="Digite o sua senha"
-          value={senha}
-          onChange={(event) => setSenha(event.target.value)}
-        />
-        <div className="btn">
-          <button onClick={newUsers}>Cadastrar</button>
-          <button onClick={logarUsuario}>Fazer Login</button>
+          <label>Email</label>
+          <input
+            placeholder="Digite o sua senha"
+            value={senha}
+            onChange={(event) => setSenha(event.target.value)}
+          />
+          <div className="btn-login">
+            <button onClick={newUsers}>Cadastrar</button>
+            <button onClick={logarUsuario}>Fazer Login</button>
+          </div>
+
+          <h2>Posts</h2>
+          <ToastContainer autoClose={3000} />
+          <label>ID do Post:</label>
+          <input
+            type="text"
+            placeholder="Digite o ID que deseja atualizar!!"
+            value={idPosts}
+            onChange={(event) => setIdPosts(event.target.value)}
+          />
+
+          <label>Titulo:</label>
+          <textarea
+            type="text"
+            placeholder="Digite o titulo"
+            value={titulo}
+            onChange={(event) => setTitulo(event.target.value)}
+          ></textarea>
+          <label>Autor:</label>
+          <input
+            type="text"
+            placeholder="Autor do post"
+            value={autor}
+            onChange={(event) => setAutor(event.target.value)}
+          />
+          <div className="btn">
+            <button onClick={handleAdd}>Cadastrar</button>
+            <button onClick={buscarPosts}>Buscar posts</button>
+            <button onClick={atualizarPost}>Atualizar o Post</button>
+          </div>
+
+          <ul>
+            {posts.map((post) => {
+              return (
+                <li key={post.id}>
+                  <strong>ID: {post.id}</strong>
+                  <span>Titulo: {post.titulo}</span>
+                  <span>Autor: {post.autor}</span>
+                  <button
+                    className="deletarBtn"
+                    onClick={() => deletarPosts(post.id)}
+                  >
+                    Deletar
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         </div>
-      </div>
-
-      <div className="container">
-        <h2>Posts</h2>
-        <ToastContainer autoClose={3000} />
-        <label>ID do Post:</label>
-        <input
-          type="text"
-          placeholder="Digite o ID que deseja atualizar!!"
-          value={idPosts}
-          onChange={(event) => setIdPosts(event.target.value)}
-        />
-
-        <label>Titulo:</label>
-        <textarea
-          type="text"
-          placeholder="Digite o titulo"
-          value={titulo}
-          onChange={(event) => setTitulo(event.target.value)}
-        ></textarea>
-        <label>Autor:</label>
-        <input
-          type="text"
-          placeholder="Autor do post"
-          value={autor}
-          onChange={(event) => setAutor(event.target.value)}
-        />
-        <div className="btn">
-          <button onClick={handleAdd}>Cadastrar</button>
-          <button onClick={buscarPosts}>Buscar posts</button>
-          <button onClick={atualizarPost}>Atualizar o Post</button>
-        </div>
-
-        <ul>
-          {posts.map((post) => {
-            return (
-              <li key={post.id}>
-                <strong>ID: {post.id}</strong>
-                <span>Titulo: {post.titulo}</span>
-                <span>Autor: {post.autor}</span>
-                <button
-                  className="deletarBtn"
-                  onClick={() => deletarPosts(post.id)}
-                >
-                  Deletar
-                </button>
-              </li>
-            );
-          })}
-        </ul>
       </div>
     </div>
   );
