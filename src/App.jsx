@@ -1,5 +1,5 @@
-import { db } from "./firebaseConnection";
-import { useState } from "react";
+import { db, auth } from "./firebaseConnection";
+import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import {
   doc,
@@ -10,7 +10,9 @@ import {
   getDocs,
   updateDoc,
   deleteDoc,
+  onSnapshot,
 } from "firebase/firestore"; // Adicionar dados ao Cloud Firestore
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 import "./app.css";
 
@@ -19,7 +21,27 @@ function App() {
   const [autor, setAutor] = useState("");
   const [idPosts, setIdPosts] = useState("");
 
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
   const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    async function loadPosts() {
+      const unsub = onSnapshot(collection(db, "posts"), (snapshot) => {
+        let listaPosts = [];
+        snapshot.forEach((doc) => {
+          listaPosts.push({
+            id: doc.id,
+            titulo: doc.data().titulo,
+            autor: doc.data().autor,
+          });
+        });
+        setPosts(listaPosts);
+      });
+    }
+    loadPosts();
+  }, []);
 
   async function handleAdd() {
     // await setDoc(doc(db, "posts", "12345"), {
@@ -90,7 +112,6 @@ function App() {
         setIdPosts("");
         setTitulo("");
         setAutor("");
-        buscarPosts();
       })
       .catch((error) => {
         toast.warn(`ERRO AO ATUALIZAR O POST"\n\n${error}`);
@@ -102,18 +123,53 @@ function App() {
     await deleteDoc(docRef)
       .then(() => {
         toast.success("DELETOU ARQUIVO COM SUCESSO");
-        buscarPosts();
       })
       .catch((error) => {
         toast.warn(`DEU ERRO AO DELETAR\n\n${error}`);
       });
   }
 
+  async function newUsers() {
+    await createUserWithEmailAndPassword(auth, email, senha)
+      .then(() => {
+        toast.success("Cadastrou o usúario com sucesso");
+        setEmail("");
+        setSenha("");
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.code === "auth/weak-password") {
+          toast.warn("Senha muito fraca!!");
+        } else if (error.code === "auth/email-already-in-use") {
+          toast.warn("Email já existe");
+        }
+      });
+  }
+
   return (
     <div>
-      <h1>ReactJs + Firebase :)</h1>
+      <div className="container">
+        <h1>ReactJs + Firebase :)</h1>
+        <h2>Tela de Cadastro</h2>
+        <label>Email</label>
+        <input
+          type="text"
+          placeholder="Digite o seu email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+
+        <label>Email</label>
+        <input
+          placeholder="Digite o sua senha"
+          value={senha}
+          onChange={(event) => setSenha(event.target.value)}
+        />
+        <button onClick={newUsers}>Cadastrar</button>
+      </div>
 
       <div className="container">
+        <h2>Posts</h2>
         <ToastContainer autoClose={3000} />
         <label>ID do Post:</label>
         <input

@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app"; // função para iniciar o firebase em uma aplicação
 import { getFirestore } from "firebase/firestore"; // leitura de dados em um banco de dados do cloud firestore
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCxKUjd2f7l4cp6or89Liu_HOWZ3NZkCIw",
@@ -13,5 +14,6 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
+const auth = getAuth(firebaseApp);
 
-export { db };
+export { db, auth };

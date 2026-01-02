@@ -14,7 +14,24 @@ body {
 }
 
 h1 {
+  margin-top: 60px;
   text-align: center;
+}
+
+h2 {
+  margin-top: 20px;
+  position: relative;
+
+  &::before {
+    content: "";
+    width: 40px;
+    height: 4px;
+    background-color: #085eae;
+    display: inline-block;
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+  }
 }
 
 .container {
@@ -26,7 +43,7 @@ h1 {
 
   label {
     padding-left: 20px;
-    margin: 10px 0;
+    margin: 16px 0 10px 0;
     font-size: 1.2rem;
   }
 
