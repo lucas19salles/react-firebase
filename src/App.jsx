@@ -1,5 +1,6 @@
 import { db } from "./firebaseConnection";
 import { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import {
   doc,
   setDoc,
@@ -31,18 +32,21 @@ function App() {
     //   .catch((error) => {
     //     alert("GEROU ERRO" + error);
     //   });
-
+    if (titulo === "" || autor === "") {
+      toast.warn("Preencha os campos de titulo e autor");
+      return; // Para a execução aqui
+    }
     await addDoc(collection(db, "posts"), {
       titulo: titulo,
       autor: autor,
     })
       .then(() => {
-        alert("DADOS REGISTRADO NO BANCO!!!");
+        toast.success("DADOS REGISTRADO NO BANCO!!!");
         setAutor("");
         setTitulo("");
       })
-      .catch((error) => {
-        alert("GEROU ERRO" + error);
+      .catch(() => {
+        toast.warn("GEROU UM ERRO AO ADICIONAR");
       });
   }
 
@@ -70,8 +74,8 @@ function App() {
         });
         setPosts(lista);
       })
-      .catch((error) => {
-        alert("DEU ALGUM ERRO AO BUSCAR OS POSTS" + error);
+      .catch(() => {
+        toast.warn("DEU ALGUM ERRO AO BUSCAR OS POSTS");
       });
   }
 
@@ -82,13 +86,14 @@ function App() {
       autor: autor,
     })
       .then(() => {
-        alert("POST ATUALIZADO COM SUCESSO!!");
+        toast.success("POST ATUALIZADO COM SUCESSO!!");
         setIdPosts("");
         setTitulo("");
         setAutor("");
+        buscarPosts();
       })
       .catch((error) => {
-        alert(`ERRO AO ATUALIZAR O POST"\n\n${error}`);
+        toast.warn(`ERRO AO ATUALIZAR O POST"\n\n${error}`);
       });
   }
 
@@ -96,11 +101,11 @@ function App() {
     const docRef = doc(db, "posts", id);
     await deleteDoc(docRef)
       .then(() => {
-        alert("DELETOU ARQUIVO COM SUCESSO");
+        toast.success("DELETOU ARQUIVO COM SUCESSO");
         buscarPosts();
       })
       .catch((error) => {
-        alert(`DEU ERRO AO DELETAR\n\n${error}`);
+        toast.warn(`DEU ERRO AO DELETAR\n\n${error}`);
       });
   }
 
@@ -109,6 +114,7 @@ function App() {
       <h1>ReactJs + Firebase :)</h1>
 
       <div className="container">
+        <ToastContainer autoClose={3000} />
         <label>ID do Post:</label>
         <input
           type="text"
