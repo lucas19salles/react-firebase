@@ -39,7 +39,9 @@ h2 {
   flex-direction: column;
   max-width: 100%;
   width: 480px;
+  height: 100vh;
   padding-inline: 40px;
+  margin: 0 auto;
 
   label {
     padding-left: 20px;
